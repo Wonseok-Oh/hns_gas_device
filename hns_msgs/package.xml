@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>hns_msgs</name>
+  <version>1.0.0</version>
+  <description>The hns_msgs package</description>
+  <maintainer email="ooww0123@kaist.ac.kr">Wonseok Oh</maintainer>
+
+  <license>BSD</license>
+  <author email="ooww0123@kaist.ac.kr">Wonseok Oh</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>message_generation</build_depend>
+  <exec_depend>message_runtime</exec_depend>
+  <depend>std_msgs</depend>
+
+  <!-- The export tag contains other, unspecified, tags -->
+  <export>
+    <!-- Other tools can request additional information be placed here -->
+
+  </export>
+</package>
