@@ -12,13 +12,14 @@ using namespace hns_msgs;
 using namespace std;
 
 HNSDeviceDriver::HNSDeviceDriver(){
+	ros::NodeHandle private_nh("~");
 	ros::NodeHandle nh;
 	string port;
 	int baudrate;
 	int timeout;
-	nh.param("port", port, string("/dev/ttyACM0"));
-	nh.param("baudrate", baudrate, 9600);
-	nh.param("timeout", timeout, 1000);
+	private_nh.param("port", port, string("/dev/ttyACM0"));
+	private_nh.param("baudrate", baudrate, 9600);
+	private_nh.param("timeout", timeout, 1000);
 	baudrate = static_cast<uint32_t>(baudrate);
 	timeout = static_cast<uint32_t>(timeout);
  	serial::Timeout timeout_class = serial::Timeout::simpleTimeout(timeout);
@@ -60,11 +61,13 @@ void HNSDeviceDriver::commandCallback(hns_msgs::HNSCommand msg){
 }
 
 void HNSDeviceDriver::executeFirstCommand(HNSCommand cmd, bool isInit){
+	m_firstInputTime = ros::Time::now();
 	if (!isInit){
 		// If cmd is opening cmd, send valve open serial command. Report the time & return
 		if (cmd.option_num != 10 && cmd.valve_num != HNSCommand::RESET){
 			m_serial.write(string("0") + to_string(2*m_state.cmd.valve_num-1) + string("*"));
 			m_lastCtrlTime = ros::Time::now();
+			ROS_INFO("First execution time: %f", (m_lastCtrlTime-m_firstInputTime).toSec());
 			m_state.device[0] = true;
 			m_state.device[m_state.cmd.valve_num] = true;
 			m_state.cmd = cmd;
@@ -103,6 +106,7 @@ void HNSDeviceDriver::executeFirstCommand(HNSCommand cmd, bool isInit){
 
 		m_serial.write(close_old_valve_cmd + new_valve_cmd);
 		m_lastCtrlTime = ros::Time::now();
+		ROS_INFO("new cycle time: %f", (m_lastCtrlTime-m_firstInputTime).toSec());
 		m_state.cmd = cmd;
 		return;
 	}
@@ -116,6 +120,8 @@ void HNSDeviceDriver::cycleManager(const ros::TimerEvent& event){
 	ros::Time now = ros::Time::now();
 	if (ros::Time::now() - m_lastInputTime > ros::Duration(3)){
 		m_serial.write(string("0"));
+		m_lastCtrlTime = ros::Time::now();
+		ROS_INFO("Reset time: %f", (m_lastCtrlTime-m_firstInputTime).toSec());
 		for (int i = 0; i <= HNSCommand::VALVE_4; i++){
 			m_state.device[i] = false;
 		}
@@ -128,6 +134,7 @@ void HNSDeviceDriver::cycleManager(const ros::TimerEvent& event){
 					m_state.cmd.option_num != 0){
 				m_serial.write(to_string(2*m_state.cmd.valve_num) + string("*"));
 				m_lastCtrlTime = ros::Time::now();
+				ROS_INFO("Off time: %f", (m_lastCtrlTime-m_firstInputTime).toSec());
 				m_state.device[m_state.cmd.valve_num] = false;
 				m_state.device[0] = false;
 				return;
@@ -140,6 +147,7 @@ void HNSDeviceDriver::cycleManager(const ros::TimerEvent& event){
 					m_state.cmd.option_num != 10){
 				m_serial.write(to_string(2*m_state.cmd.valve_num-1) + string("*"));
 				m_lastCtrlTime = ros::Time::now();
+				ROS_INFO("On time: %f", (m_lastCtrlTime-m_firstInputTime).toSec());
 				m_state.device[m_state.cmd.valve_num] = true;
 				m_state.device[0] = true;
 				return;

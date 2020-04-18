@@ -44,6 +44,7 @@ void HNSDeviceController::timerCallback(const ros::TimerEvent& event){
 }
 
 void HNSDeviceController::sigIntHandler(int sig){
+	ROS_INFO("signal Interrupt detected: quit after 3 seconds..");
 	HNSCommand cmd;
 	cmd.valve_num = HNSCommand::RESET;
 	ros::Rate loop_rate(10);

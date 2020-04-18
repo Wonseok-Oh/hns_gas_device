@@ -33,6 +33,7 @@ private:
 	ros::Timer m_timer;
 	ros::Time m_lastCtrlTime;
 	ros::Time m_lastInputTime;
+	ros::Time m_firstInputTime;
 	ros::Publisher m_state_pub;
 	ros::Subscriber m_input_sub;
 
