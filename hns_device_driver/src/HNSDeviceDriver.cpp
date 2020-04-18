@@ -69,7 +69,7 @@ void HNSDeviceDriver::executeFirstCommand(HNSCommand cmd, bool isInit){
 			m_lastCtrlTime = ros::Time::now();
 			ROS_INFO("First execution time: %f", (m_lastCtrlTime-m_firstInputTime).toSec());
 			m_state.device[0] = true;
-			m_state.device[m_state.cmd.valve_num] = true;
+			m_state.device[cmd.valve_num] = true;
 			m_state.cmd = cmd;
 			m_isInit = true;
 			return;
@@ -84,12 +84,13 @@ void HNSDeviceDriver::executeFirstCommand(HNSCommand cmd, bool isInit){
 		string close_old_valve_cmd = to_string(2*m_state.cmd.valve_num);
 		string new_valve_cmd;
 		m_state.device[m_state.cmd.valve_num] = false;
+		ROS_INFO("m_state.cmd.valve_num: %d", m_state.cmd.valve_num);
 
 		// If cmd is opening command, set a new command to open the valve
 		if (cmd.option_num != 10  && cmd.valve_num != HNSCommand::RESET){
 
-			new_valve_cmd = to_string(2*m_state.cmd.valve_num-1);
-			m_state.device[m_state.cmd.valve_num] = true;
+			new_valve_cmd = to_string(2*cmd.valve_num-1);
+			m_state.device[cmd.valve_num] = true;
 
 			// if valve is closed before, add "pump on" to the new command
 			if (m_state.device[0] == false) {
