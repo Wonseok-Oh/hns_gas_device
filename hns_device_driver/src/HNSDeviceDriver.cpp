@@ -11,14 +11,25 @@ using namespace hns_device_driver;
 using namespace hns_msgs;
 using namespace std;
 
-HNSDeviceDriver::HNSDeviceDriver(std::string port, unsigned long baudrate, uint32_t timeout){
+HNSDeviceDriver::HNSDeviceDriver(){
 	ros::NodeHandle nh;
+	string port;
+	int baudrate;
+	int timeout;
+	nh.param("port", port, string("/dev/ttyACM0"));
+	nh.param("baudrate", baudrate, 9600);
+	nh.param("timeout", timeout, 1000);
+	baudrate = static_cast<uint32_t>(baudrate);
+	timeout = static_cast<uint32_t>(timeout);
+ 	serial::Timeout timeout_class = serial::Timeout::simpleTimeout(timeout);
  	m_serial.setPort(port);
+ 	m_serial.setBaudrate(baudrate);
+ 	m_serial.setTimeout(timeout_class);
 	m_serial.open();
 	cout << "Is the serial port open? ";
 	if (m_serial.isOpen()) cout << "Yes." << endl;
 	else cout << "No." << endl;
-	m_input_sub = nh.subscribe<hns_msgs::HNSCommand>("/cmd_HNS", 1, &HNSDeviceDriver::commandCallback, this);
+	m_input_sub = nh.subscribe<hns_msgs::HNSCommand>("cmd_HNS", 1, &HNSDeviceDriver::commandCallback, this);
 	m_state_pub = nh.advertise<hns_msgs::HNSState>("state", 1);
 	m_isInit = false;
 	m_timer = nh.createTimer(ros::Duration(0.1), &HNSDeviceDriver::cycleManager, this);

@@ -13,11 +13,7 @@ using namespace ros;
 
 int main(int argc, char **argv){
 	init(argc, argv, "hns_device_driver_node");
-	std::string port("/dev/ttyACM0");
-	unsigned long baudrate = 9600;
-	uint32_t timeout = 1000;
-	//serial::Serial my_serial(port, baudrate, serial::Timeout::simpleTimeout(timeout));
-	HNSDeviceDriver hns_device_driver(port, baudrate, timeout);
+	HNSDeviceDriver hns_device_driver;
 	ros::spin();
 	return 0;
 }
