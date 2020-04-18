@@ -17,7 +17,7 @@ int main(int argc, char **argv){
 	unsigned long baudrate = 9600;
 	uint32_t timeout = 1000;
 	//serial::Serial my_serial(port, baudrate, serial::Timeout::simpleTimeout(timeout));
-	HNSDeviceDriver hns_device_driver(port, baudrate, timeout);
+	HNSDeviceDriver hns_device_driver(port, baudrate, serial::Timeout::simpleTimeout(timeout));
 	ros::spin();
 	return 0;
 }

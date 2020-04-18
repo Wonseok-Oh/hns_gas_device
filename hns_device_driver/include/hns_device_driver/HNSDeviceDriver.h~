@@ -20,7 +20,7 @@ namespace hns_device_driver {
 
 class HNSDeviceDriver {
 public:
-	HNSDeviceDriver(std::string port, unsigned long baudrate, uint32_t timeout);
+	HNSDeviceDriver(port, baudrate, serial::Timeout::simpleTimeout(timeout));
 	~HNSDeviceDriver();
 	void commandCallback(hns_msgs::HNSCommand msg);
 	void cycleManager(const ros::TimerEvent& event);
