@@ -120,6 +120,12 @@ void HNSDeviceDriver::cycleManager(const ros::TimerEvent& event){
 	m_state_pub.publish(m_state);
 	ros::Time now = ros::Time::now();
 	if (ros::Time::now() - m_lastInputTime > ros::Duration(3)){
+		// If already reset, do nothing
+		if (!(m_state.device[0]||m_state.device[1]||m_state.device[2]||m_state.device[3]||m_state.device[4])){
+			return;
+		}
+
+		// else, reset command
 		m_serial.write(string("0"));
 		m_lastCtrlTime = ros::Time::now();
 		ROS_INFO("Reset time: %f", (m_lastCtrlTime-m_firstInputTime).toSec());
@@ -133,8 +139,8 @@ void HNSDeviceDriver::cycleManager(const ros::TimerEvent& event){
 		if (m_state.device[0] == true){
 			if (now - m_lastCtrlTime >= ros::Duration(10 - m_state.cmd.option_num) &&
 					m_state.cmd.option_num != 0){
-				m_serial.write(to_string(2*m_state.cmd.valve_num) + string("*"));
 				m_lastCtrlTime = ros::Time::now();
+				m_serial.write(to_string(2*m_state.cmd.valve_num) + string("*"));
 				ROS_INFO("Off time: %f", (m_lastCtrlTime-m_firstInputTime).toSec());
 				m_state.device[m_state.cmd.valve_num] = false;
 				m_state.device[0] = false;
@@ -146,8 +152,8 @@ void HNSDeviceDriver::cycleManager(const ros::TimerEvent& event){
 		else {
 			if (now - m_lastCtrlTime >= ros::Duration(m_state.cmd.option_num) &&
 					m_state.cmd.option_num != 10){
-				m_serial.write(to_string(2*m_state.cmd.valve_num-1) + string("*"));
 				m_lastCtrlTime = ros::Time::now();
+				m_serial.write(to_string(2*m_state.cmd.valve_num-1) + string("*"));
 				ROS_INFO("On time: %f", (m_lastCtrlTime-m_firstInputTime).toSec());
 				m_state.device[m_state.cmd.valve_num] = true;
 				m_state.device[0] = true;

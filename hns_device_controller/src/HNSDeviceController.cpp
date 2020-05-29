@@ -36,7 +36,7 @@ void HNSDeviceController::setCurrentCMD(const HNSCommand msg){
 
 void HNSDeviceController::timerCallback(const ros::TimerEvent& event){
 	if (!m_isInit){
-		ROS_WARN("HNSDeviceController: timerCallback: current_cmd is not set yet");
+		//ROS_WARN("HNSDeviceController: timerCallback: current_cmd is not set yet");
 		return;
 	}
 	m_cmd_pub.publish(m_current_cmd);
