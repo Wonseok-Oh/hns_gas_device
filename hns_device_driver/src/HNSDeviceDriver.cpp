@@ -173,7 +173,7 @@ void HNSDeviceDriver::readData(const ros::TimerEvent& event){
 		return;
 	}
 	else {
-		stringstream data(buffer.substr(n));
+		stringstream data(buffer.substr(n+1));
 		int num_data;
 		data >> num_data;
 		ethanolsensor sensor_data;
