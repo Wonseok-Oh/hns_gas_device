@@ -32,6 +32,7 @@ HNSDeviceDriver::HNSDeviceDriver(){
 	else cout << "No." << endl;
 	m_input_sub = nh.subscribe<hns_msgs::HNSCommand>("cmd_HNS", 1, &HNSDeviceDriver::commandCallback, this);
 	m_state_pub = nh.advertise<hns_msgs::HNSState>("state", 1);
+	m_data_pub = nh.advertise<hns_msgs::ethanolsensor>("ethanol_data", 100);
 	m_isInit = false;
 	m_timer = nh.createTimer(ros::Duration(0.1), &HNSDeviceDriver::cycleManager, this);
 	m_timer_read = nh.createTimer(ros::Duration(0.1), &HNSDeviceDriver::readData, this);
@@ -167,5 +168,17 @@ void HNSDeviceDriver::cycleManager(const ros::TimerEvent& event){
 
 void HNSDeviceDriver::readData(const ros::TimerEvent& event){
 	string buffer = m_serial.readline();
-//	cout << "read value: " << buffer << endl;
+	string::size_type n = buffer.find('@');
+	if (n == string::npos){
+		return;
+	}
+	else {
+		stringstream data(buffer.substr(n));
+		int num_data;
+		data >> num_data;
+		ethanolsensor sensor_data;
+		sensor_data.CH3CH2OH = num_data;
+		m_data_pub.publish(sensor_data);
+	}
+
 }

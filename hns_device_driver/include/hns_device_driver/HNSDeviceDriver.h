@@ -10,6 +10,7 @@
 
 #include <hns_msgs/HNSCommand.h>
 #include <hns_msgs/HNSState.h>
+#include <hns_msgs/ethanolsensor.h>
 #include <ros/ros.h>
 #include "serial/serial.h"
 #include <string>
@@ -37,6 +38,7 @@ private:
 	ros::Time m_lastInputTime;
 	ros::Time m_firstInputTime;
 	ros::Publisher m_state_pub;
+	ros::Publisher m_data_pub;
 	ros::Subscriber m_input_sub;
 
 };
