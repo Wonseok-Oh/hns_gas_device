@@ -167,5 +167,5 @@ void HNSDeviceDriver::cycleManager(const ros::TimerEvent& event){
 
 void HNSDeviceDriver::readData(const ros::TimerEvent& event){
 	string buffer = m_serial.readline();
-//	cout << "read value: " << buffer << endl;
+	cout << "read value: " << buffer << endl;
 }
