@@ -25,12 +25,14 @@ public:
 	void commandCallback(hns_msgs::HNSCommand msg);
 	void cycleManager(const ros::TimerEvent& event);
 	void executeFirstCommand(hns_msgs::HNSCommand cmd, bool isInit);
+	void readData(const ros::TimerEvent& event);
 
 private:
 	hns_msgs::HNSState m_state;
 	serial::Serial m_serial;
 	bool m_isInit;
 	ros::Timer m_timer;
+	ros::Timer m_timer_read;
 	ros::Time m_lastCtrlTime;
 	ros::Time m_lastInputTime;
 	ros::Time m_firstInputTime;

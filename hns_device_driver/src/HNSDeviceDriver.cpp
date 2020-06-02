@@ -34,6 +34,8 @@ HNSDeviceDriver::HNSDeviceDriver(){
 	m_state_pub = nh.advertise<hns_msgs::HNSState>("state", 1);
 	m_isInit = false;
 	m_timer = nh.createTimer(ros::Duration(0.1), &HNSDeviceDriver::cycleManager, this);
+	m_timer_read = nh.createTimer(ros::Duration(0.1), &HNSDeviceDriver::readData, this);
+
 	for (int i = HNSCommand::RESET; i <= HNSCommand::VALVE_4; i++){
 		m_state.device[i] = false;
 	}
@@ -161,4 +163,9 @@ void HNSDeviceDriver::cycleManager(const ros::TimerEvent& event){
 			else return;
 		}
 	}
+}
+
+void HNSDeviceDriver::readData(const ros::TimerEvent& event){
+	string buffer = m_serial.readline();
+	cout << "read value: " << buffer << endl;
 }
