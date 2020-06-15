@@ -11,7 +11,7 @@
 #include <hns_msgs/HNSCommand.h>
 #include <hns_msgs/HNSState.h>
 #include <hns_msgs/ethanolsensor.h>
-#include <std_msgs/Int64.h>
+#include <std_msgs/String.h>
 #include <ros/ros.h>
 #include "serial/serial.h"
 #include <string>
@@ -23,7 +23,7 @@ class HNSAnalogTest {
 public:
 	HNSAnalogTest();
 	~HNSAnalogTest();
-	void cmdCallback(const std_msgs::Int64 msg);
+	void cmdCallback(const std_msgs::String msg);
 	void readData(const ros::TimerEvent& event);
 
 private:

@@ -31,7 +31,7 @@ HNSAnalogTest::HNSAnalogTest(){
 	cout << "Is the serial port open? ";
 	if (m_serial.isOpen()) cout << "Yes." << endl;
 	else cout << "No." << endl;
-	m_input_sub = nh.subscribe<std_msgs::Int64>("cmd_HNS", 1, &HNSAnalogTest::cmdCallback, this);
+	m_input_sub = nh.subscribe<std_msgs::String>("cmd_HNS", 1, &HNSAnalogTest::cmdCallback, this);
 	m_state_pub = nh.advertise<hns_msgs::HNSState>("state", 1);
 	m_data_pub = nh.advertise<hns_msgs::ethanolsensor>("ethanol_data", 100);
 	m_timer_read = nh.createTimer(ros::Duration(0.1), &HNSAnalogTest::readData, this);
@@ -43,8 +43,8 @@ HNSAnalogTest::HNSAnalogTest(){
 
 HNSAnalogTest::~HNSAnalogTest(){}
 
-void HNSAnalogTest::cmdCallback(const std_msgs::Int64 msg){
-	m_serial.write(to_string(msg.data));
+void HNSAnalogTest::cmdCallback(const std_msgs::String msg){
+	m_serial.write(msg.data);
 	return;
 }
 
